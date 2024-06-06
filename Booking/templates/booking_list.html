@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking List</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Booking List</h1>
+        <ul id="bookingList"></ul>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/booking.js') }}"></script>
+    <script>
+        // Fetch booking data and render list
+        fetch("/bookings")
+            .then(response => response.json())
+            .then(bookings => {
+                const bookingList = document.getElementById("bookingList");
+                bookings.forEach(booking => {
+                    const listItem = document.createElement("li");
+                    listItem.textContent = `Name: ${booking.name}, Service: ${booking.service}, Date: ${booking.date}, Time: ${booking.time}`;
+                    bookingList.appendChild(listItem);
+                });
+            })
+            .catch(error => console.error("Error fetching bookings:", error));
+    </script>
+</body>
+</html>
