@@ -21,7 +21,7 @@ db = client["BookingDB"]
 collection = db["BookingData"]
 
 
-BOOKING_SERVICE_URL = "http://booking-service-url"
+BOOKING_SERVICE_URL = "http://127.0.0.1:5002"
 
 @app.route("/")
 def index():
@@ -31,7 +31,7 @@ def index():
 def create_booking():
     try:
         # Get the booking data from the request
-        data = request.json
+        data = requests.json
         
         # Make a POST request to the Booking service
         response = requests.post(f"{BOOKING_SERVICE_URL}/bookings", json=data)
@@ -39,7 +39,7 @@ def create_booking():
         # Check the response status code
         if response.status_code == 201:
             # Booking created successfully
-            return jsonify({"message": "Booking created successfully", "booking_id": response.json()["id"]}), 201
+            return jsonify({'message': 'Booking created successfully'}), 200
         else:
             # Failed to create booking
             return jsonify({"error": "Failed to create booking"}), response.status_code
