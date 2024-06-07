@@ -1,5 +1,5 @@
 import os
-from flask import Flask, jsonify, request, render_template
+from flask import Flask, jsonify, request
 from pymongo import MongoClient
 from bson import ObjectId
 import requests
@@ -20,32 +20,39 @@ client = MongoClient(connection_string)
 db = client["BookingDB"]
 collection = db["BookingData"]
 
-
 BOOKING_SERVICE_URL = "http://127.0.0.1:5002"
 
 @app.route("/")
 def index():
-    return "Booking Service is up and running!"
+    return "Booking Service is running!"
 
-@app.route("/", methods=["POST"])
+@app.route("/bookings", methods=["POST"])
 def create_booking():
     try:
-        # Get the booking data from the request
-        data = requests.json
-        
-        # Make a POST request to the Booking service
-        response = requests.post(f"{BOOKING_SERVICE_URL}/bookings", json=data)
-        
-        # Check the response status code
-        if response.status_code == 201:
-            # Booking created successfully
-            return jsonify({'message': 'Booking created successfully'}), 200
+        data = request.json
+        booking = {
+            "check_in_date": data['check_in_date'],
+            "check_out_date": data['check_out_date'],
+            "name": data['name'],
+            "email": data['email'],
+            "phone": data['phone'],
+            "comments": data.get('comments', ''),
+            "dormitory_id": data['dormitory_id']
+        }
+
+        result = collection.insert_one(booking)
+
+        dormitory_id = data['dormitory_id']
+        url = f"http://127.0.0.1:5001/dormitories/{dormitory_id}/decrement_room"
+        dormitory_response = requests.post(url)
+
+        if dormitory_response.status_code == 200:
+            return jsonify({"message": "Booking created and room decremented successfully!"}), 201
         else:
-            # Failed to create booking
-            return jsonify({"error": "Failed to create booking"}), response.status_code
+            return jsonify({"error": "Booking created but failed to decrement room in dormitory service."}), 500
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-    
+
 @app.route("/bookings", methods=["GET"])
 def get_bookings():
     try:
@@ -55,7 +62,7 @@ def get_bookings():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# Example endpoint to retrieve a single booking by ID
+# Endpoint to retrieve a single booking by ID
 @app.route("/bookings/<string:booking_id>", methods=["GET"])
 def get_booking(booking_id):
     try:
@@ -68,7 +75,7 @@ def get_booking(booking_id):
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# Example endpoint to delete a booking by ID
+# Endpoint to delete a booking by ID
 @app.route("/bookings/<string:booking_id>", methods=["DELETE"])
 def delete_booking(booking_id):
     try:
@@ -80,11 +87,6 @@ def delete_booking(booking_id):
             return jsonify({"error": "Booking not found"}), 404
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-    
-@app.route("/", methods=["POST"])
-def handle_booking_form():
-    # ดำเนินการตามคำสั่งที่ต้องการ เช่น จัดการการจอง บันทึกข้อมูลลงในฐานข้อมูล เป็นต้น
-    return "Booking form submitted successfully!"
+
 if __name__ == "__main__":
     app.run(debug=True, port=5002)
-

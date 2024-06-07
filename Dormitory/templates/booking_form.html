@@ -1,24 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Booking Form</title>
 </head>
-
 <body>
     <h2>Booking Form</h2>
-<<<<<<< HEAD
-    <form action="https://curly-meme-x556654v797qhj5r-5001.app.github.dev/" method="POST" enctype="application/json">
-=======
-    <form action="http://127.0.0.1:5002/booking_form" method="POST" enctype="application/json">
->>>>>>> aa821347b3b2250a7b2119ec4538448265dd1060
+    <form id="bookingForm">
         <label for="check-in-date">Check-in Date:</label><br>
-        <input type="date" id="check-in-date" name="check-in-date" required><br><br>
+        <input type="date" id="check-in-date" name="check_in_date" required><br><br>
 
         <label for="check-out-date">Check-out Date:</label><br>
-        <input type="date" id="check-out-date" name="check-out-date" required><br><br>
+        <input type="date" id="check-out-date" name="check_out_date" required><br><br>
 
         <label for="name">Name:</label><br>
         <input type="text" id="name" name="name" required><br><br>
@@ -32,8 +26,38 @@
         <label for="comments">Comments:</label><br>
         <textarea id="comments" name="comments" rows="4" cols="50"></textarea><br><br>
 
+        <input type="hidden" id="dormitory-id" name="dormitory_id" value="your_dormitory_id"> <!-- ID ของหอพัก -->
+
         <input type="submit" value="Submit">
     </form>
-</body>
 
+    <script>
+        document.getElementById('bookingForm').addEventListener('submit', handleSubmit);
+
+        function handleSubmit(event) {
+            event.preventDefault();
+            const form = event.target;
+            const formData = new FormData(form);
+            const jsonData = {};
+            formData.forEach((value, key) => jsonData[key] = value);
+            
+            fetch('http://127.0.0.1:5002/bookings', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(jsonData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                alert('Booking submitted successfully!');
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error submitting booking');
+            });
+        }
+    </script>
+</body>
 </html>

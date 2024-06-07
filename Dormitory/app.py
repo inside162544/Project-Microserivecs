@@ -41,6 +41,17 @@ def index():
 
 
 
+@app.route('/dormitories/<dormitory_id>/decrement_room', methods=['POST'])
+def decrement_room(dormitory_id):
+    dormitory = collection.find_one({"_id": ObjectId(dormitory_id)})
+    if dormitory and dormitory.get("numberOfRoomsAvailable", 0) > 0:
+        collection.update_one(
+            {"_id": ObjectId(dormitory_id)},
+            {"$inc": {"numberOfRoomsAvailable": -1}}
+        )
+        return jsonify({"message": "Room decremented successfully!"}), 200
+    return jsonify({"error": "No rooms available or dormitory not found"}), 400
+
 @app.route("/add-data")
 def add_data_page():
     return render_template("add-data.html")
@@ -130,8 +141,7 @@ def dormitory_add_post():
 
 
 @app.route(
-    "/Dormitory-delete/<string:id>", methods=["DELETE"]
-)  # Specify the type of id parameter
+    "/Dormitory-delete/<string:id>", methods=["DELETE"])
 def Dormitory_delete(id):
     try:
         # Connect to the MongoDB database and collection
@@ -231,8 +241,6 @@ def update_item(item_id):
             # Handle any exceptions that occur during the update or delete operation
             return f"Error: {str(e)}"
 
-
-    
     
 if __name__ == "__main__":
     app.run(debug=True ,port=5001)
