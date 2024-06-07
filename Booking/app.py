@@ -1,5 +1,3 @@
-
-
 import os
 from flask import Flask, jsonify, request, render_template
 from pymongo import MongoClient
@@ -88,5 +86,5 @@ def handle_booking_form():
     # ดำเนินการตามคำสั่งที่ต้องการ เช่น จัดการการจอง บันทึกข้อมูลลงในฐานข้อมูล เป็นต้น
     return "Booking form submitted successfully!"
 if __name__ == "__main__":
-    app.run(debug=True, port=5001)
+    app.run(debug=True, port=5002)
 

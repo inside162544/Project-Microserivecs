@@ -22,14 +22,18 @@
     </div>
     <br>
     <div class="container">
-        <div class="d-flex justify-content-center">
-            <a href="{{ url_for('add_data_page') }}" class="btn btn-primary"><i class="bi bi-house-add"></i>&nbsp;Add
-                Data</a>
-            <a href="{{ url_for('update') }}" class="btn btn-warning ml-3"><i class="bi bi-house-gear"></i>&nbsp;Update
-                & Delete</a>
+        <div class="d-flex  justify-content-center button-group">
+            <a href="{{ url_for('add_data_page') }}" class="btn1 btn-primary"><i class="bi bi-house-add"></i>&nbsp;Add Data</a>
         </div>
     </div>
-
+    <br><br>
+    <div class="container">
+        <div class="d-flex  justify-content-center button-group">
+            <a href="{{ url_for('update') }}" class="btn1 btn-warning"><i class="bi bi-house-gear"></i>&nbsp;Update & Delete</a>
+        </div>
+    </div>
+    
+<br><br>
     <div id="itemCarousel" class="carousel slide" data-ride="carousel">
         <div class="carousel-inner">
             {% for item in items|batch(3) %}
@@ -46,8 +50,8 @@
                                     <p class="card-text">Monthly rent: {{ sub_item.price }}</p>
                                     <p class="card-text">Available Now: {{ sub_item.numberOfRoomsAvailable }} / {{
                                         sub_item.numberOfRoomsAvailable }}</p>
-                                    <a href="{{ url_for('other_page', item_id=sub_item['_id']) }}"
-                                        class="btn btn-primary">Details</a>
+                                        <button class="button-86" role="button" onclick="redirectToDetails('{{ url_for('other_page', item_id=sub_item['_id']) }}')">Details</button>
+
                                         
                                 </div>
                             </div>

@@ -14,3 +14,7 @@ function goToTop() {
     behavior: 'smooth'
   });
 }
+
+function redirectToDetails(url) {
+  location.href = url;
+}

@@ -1,7 +1,7 @@
-from flask import Flask, render_template, request, url_for, jsonify
+from flask import Flask, render_template, request, url_for, jsonify, redirect
 from pymongo import MongoClient
 from bson import ObjectId
-
+import requests
 
 
 app = Flask(__name__)
@@ -187,8 +187,6 @@ def Dormitory_update(id):
         return jsonify({"error": str(e)}), 500
 
 
-from flask import redirect
-
 @app.route("/update_item/<item_id>", methods=["GET", "POST"])
 def update_item(item_id):
     db = client["DormitoryDB"]
@@ -237,4 +235,4 @@ def update_item(item_id):
     
     
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True ,port=5000)
